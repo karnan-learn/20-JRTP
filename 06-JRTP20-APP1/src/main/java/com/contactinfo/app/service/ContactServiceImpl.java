@@ -15,6 +15,7 @@ public class ContactServiceImpl implements ContactService {
 	private ContactRepository repo;
 	@Override
 	public String upsert(Contact contact) {
+		contact.setActiveSw("Y");
 		repo.save(contact);
 		return "SUCCESS";
 	}
@@ -37,7 +38,16 @@ public class ContactServiceImpl implements ContactService {
 
 	@Override
 	public String deleteContact(int cid) {
+//		Hard Delete
 		repo.deleteById(cid);
+		
+		// Soft delete
+//		Optional<Contact> findById = repo.findById(cid);
+//		if (findById.isPresent()) {
+//			Contact contact = findById.get();
+//			contact.setActiveSw("N");
+//			repo.save(contact);
+//		}
 		return "Deleted Sucess";
 	}
 
