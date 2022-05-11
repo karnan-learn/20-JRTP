@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class SendEmail {
 	@Autowired
@@ -26,7 +27,7 @@ public class SendEmail {
 			/*2. Fill details using MimeMessageHelper class
 			to, cc, bcc, subject, text..etc*/
 			MimeMessageHelper helper = new MimeMessageHelper(message, (files!=null && files.length>0) ? true : false);
-			
+
 			helper.setTo(to);
 			if(cc!=null)
 				helper.setCc(cc);
@@ -51,4 +52,5 @@ public class SendEmail {
 
 		return sent;
 	}
+	
 }

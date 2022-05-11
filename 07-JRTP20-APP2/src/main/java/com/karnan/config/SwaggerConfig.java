@@ -18,7 +18,7 @@ public class SwaggerConfig {
 		
 		return new Docket(DocumentationType.SWAGGER_2)
 				   .select()
-				   .apis(RequestHandlerSelectors.basePackage("com.contactinfo.app.controller"))
+				   .apis(RequestHandlerSelectors.basePackage("com.karnan.rest"))
 				   .paths(PathSelectors.any())
 				   .build();
 	}

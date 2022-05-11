@@ -44,14 +44,15 @@ public class RegistrationRestController {
 		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllContries(),HttpStatus.OK);
 	}
 	
-	@GetMapping("states/{countryId}")
-	public ResponseEntity<Map<Integer, String>> getStatesByCountryId(@PathVariable(value = "conutryId") int countryId){
+	@GetMapping("state/{countryId}")
+	public ResponseEntity<Map<Integer, String>> getStatesByCountryId(@PathVariable(value = "countryId") int countryId){
 		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllStatesByCountryId(countryId) ,HttpStatus.OK);
 	}
 	
-	@GetMapping("cities/{cityId}")
-	public ResponseEntity<Map<Integer, String>> getCityByCountryId(@PathVariable(value = "cityId") int cityId){
-		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllCitiesByStateId(cityId) ,HttpStatus.OK);
+	@GetMapping("cities/{stateId}")
+	public ResponseEntity<Map<Integer, String>> getCityByStateId(@PathVariable(value = "stateId") int stateId){
+		System.out.println(stateId);
+		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllCitiesByStateId(stateId) ,HttpStatus.OK);
 	}
 	
 }

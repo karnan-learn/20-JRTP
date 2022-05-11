@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ import com.karnan.repository.CountryMasterRepo;
 import com.karnan.repository.StateMasterRepo;
 import com.karnan.repository.UserDtlsRepo;
 import com.karnan.util.PasswordUtils;
+import com.karnan.util.ReadMailBody;
 import com.karnan.util.SendEmail;
 
 @Service
@@ -27,57 +30,43 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 	@Autowired
 	private UserDtlsRepo userDtlsRepo;
-	
 	@Autowired
 	private SendEmail util;
-	
 	@Autowired
 	private UserDtlsEntity userDtl;
-	
 	@Autowired
 	private CountryMasterRepo countryMasterRepo;
-	
 	@Autowired
 	private StateMasterRepo stateMasterRepo;
 	@Autowired
 	private CityMasterRepo cityMasterRepo;
+	@Autowired
+	private ReadMailBody readMailBody;
 	
+	@Value(value =  "${unlockAccountEmailTemplate}")
+	String unlockAccountEmailTemplate;
+	
+	@Value(value =  "${recoveryPasswordEmailTemplate}")
+	String recoveryPasswordEmailTemplate;
 	@Override
 	public String signUp(UserRegForm user) throws IllegalArgumentException{
-		userDtl.setFirstName(user.getFirstName());
-		userDtl.setLastName(user.getLastName());
-		userDtl.setUserEmail(user.getUserEmail());
-		userDtl.setUserMobile(user.getUserMobile());
-		userDtl.setDob(user.getDob());
-		userDtl.setGender(user.getGender());
-		userDtl.setCountryId(user.getCountryId());
-		userDtl.setStateId(user.getStateId());
-		userDtl.setCityId(user.getCityId());
+		System.out.println(unlockAccountEmailTemplate+" "+recoveryPasswordEmailTemplate);
+		BeanUtils.copyProperties(user, userDtl);
 		userDtl.setUserPwd(PasswordUtils.generateRandomPassword(12));
 		userDtl.setAccStatus(false);
-		UserDtlsEntity savedUser = userDtlsRepo.save(userDtl);
+		UserDtlsEntity savedUser = userDtlsRepo.save(userDtl); 
 		if(savedUser!=null) {
-			String htmlmsg = "<html>\r\n"
-					+ "  <body>\r\n"
-					+ "    <h3>Hi "+userDtl.getFirstName() +" "+ userDtl.getLastName() +" :</h3>\r\n"
-					+ "    <p>Welcome to IES family, your registration is almost complete.</p>\r\n"
-					+ "    <p>Please unlock your account below details</p>\r\n"
-					+ "    <p>Temporary Password : "+ userDtl.getUserPwd()+"</p>\r\n"
-					+ "    <p><a href='www.google.com'>Link to unlock account</a></p>\r\n"
-					+ "    <h4>Thanks,</h4>\r\n"
-					+ "    <h4>IES Team.</h4>\r\n"
-					+ "  </body>\r\n"
-					+ "</html>";
 			boolean sent = util.send(userDtl.getUserEmail(),
 					new String[] {},
 					new String[] {}, 
 					"Unlock IES Account", 
-					htmlmsg, 
+					readMailBody.readMailBodyContent(unlockAccountEmailTemplate, savedUser), 
 					new Resource[] {});
 			System.out.println(sent);
 			if(sent) {
 				return "User Registration Successfull && Check Your Email for Temporary Password";
 			}else {
+				userDtlsRepo.deleteById(savedUser.getUserId());
 				return "Sending Email Failed && again SignUp";
 			}
 		}else {
@@ -113,7 +102,6 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 	@Override
 	public Map<Integer, String> getAllStatesByCountryId(int countryId) {
 		List<StateMasterEntity> states = stateMasterRepo.findByCountryId(countryId);
-		System.out.println(states);
 		Map<Integer,String> stateMap = new HashMap<>();
 		for(StateMasterEntity entity : states) {
 			stateMap.put(entity.getStateId(), entity.getStateName());
@@ -151,24 +139,13 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 		try {
 			UserDtlsEntity user = userDtlsRepo.findByUserEmail(email);
 			System.out.println(user);
-			String htmlmsg = "<html>\r\n"
-					+ "  <body>\r\n"
-					+ "    <h3>Hi "+user.getFirstName() +" "+ user.getLastName() +" :</h3>\r\n"
-					+ "    <p>Welcome to IES family, your password is recovered.</p>\r\n"
-					+ "    <p>Please login your account using below password</p>\r\n"
-					+ "    <p>Your Password : "+ user.getUserPwd()+"</p>\r\n"
-					+ "    <p><a href='www.google.com'>Login to account</a></p>\r\n"
-					+ "    <h4>Thanks,</h4>\r\n"
-					+ "    <h4>IES Team.</h4>\r\n"
-					+ "  </body>\r\n"
-					+ "</html>";
 			if(user.isAccStatus()) {
 				if(isEmailExistsOrNot(email) && 
 						 util.send(user.getUserEmail(),
 								new String[] {},
 								new String[] {}, 
 								"Unlock IES Account", 
-								htmlmsg, 
+								readMailBody.readMailBodyContent(recoveryPasswordEmailTemplate, user), 
 								new Resource[] {})
 						) {
 					return "Password mailed";

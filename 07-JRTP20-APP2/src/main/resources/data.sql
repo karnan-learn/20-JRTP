@@ -6,7 +6,7 @@ Insert Into COUNTRY_MASTER (COUNTRY_ID, COUNTRY_NAME) Values(2,'USA');
 Insert Into STATE_MASTER (STATE_ID, COUNTRY_ID, STATE_NAME) Values(1,1,'Andhra Pradesh');
 Insert Into STATE_MASTER (STATE_ID, COUNTRY_ID, STATE_NAME) Values(2,1,'Karnataka');
 Insert Into STATE_MASTER (STATE_ID, COUNTRY_ID, STATE_NAME) Values(3,2,'New Jersy');
-insert into STATE_MASTER (STATE_ID, COUNTRY_ID, STATE_NAME) values(4,2,'Ohio');
+Insert Into STATE_MASTER (STATE_ID, COUNTRY_ID, STATE_NAME) Values(4,2,'Ohio');
 
 
 Insert Into CITY_MASTER (CITY_ID, CITY_NAME, STATE_ID) Values(1,'Vizag',1);
