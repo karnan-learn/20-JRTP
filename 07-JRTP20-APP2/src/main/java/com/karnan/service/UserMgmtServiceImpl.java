@@ -27,8 +27,10 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 	@Autowired
 	private UserDtlsRepo userDtlsRepo;
+	
 	@Autowired
 	private SendEmail util;
+	
 	@Autowired
 	private UserDtlsEntity userDtl;
 	
@@ -111,6 +113,7 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 	@Override
 	public Map<Integer, String> getAllStatesByCountryId(int countryId) {
 		List<StateMasterEntity> states = stateMasterRepo.findByCountryId(countryId);
+		System.out.println(states);
 		Map<Integer,String> stateMap = new HashMap<>();
 		for(StateMasterEntity entity : states) {
 			stateMap.put(entity.getStateId(), entity.getStateName());

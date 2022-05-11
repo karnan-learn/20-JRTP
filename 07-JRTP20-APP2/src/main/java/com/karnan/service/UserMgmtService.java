@@ -1,6 +1,5 @@
 package com.karnan.service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.karnan.bindings.LoginForm;
