@@ -1,12 +1,6 @@
 package com.karnan.bindings;
 
-import java.sql.Date;
 import java.time.LocalDate;
-
-import javax.persistence.Column;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Data;
 

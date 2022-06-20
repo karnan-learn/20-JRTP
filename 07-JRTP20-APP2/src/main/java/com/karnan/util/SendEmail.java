@@ -15,7 +15,7 @@ public class SendEmail {
 	private JavaMailSender mailSender;
 
 	public boolean send(
-			String to,String cc[],String bcc[],String subject,String text,Resource[] files
+			String to,String[] cc,String[] bcc,String subject,String text,Resource[] files
 			)
 	{
 		boolean sent = false;
@@ -26,7 +26,13 @@ public class SendEmail {
 
 			/*2. Fill details using MimeMessageHelper class
 			to, cc, bcc, subject, text..etc*/
-			MimeMessageHelper helper = new MimeMessageHelper(message, (files!=null && files.length>0) ? true : false);
+			boolean isFileAvilable = true;
+			if((files!=null && files.length>0)) {
+				isFileAvilable =  true;
+			}else {
+				isFileAvilable =  false;
+			}
+			MimeMessageHelper helper = new MimeMessageHelper(message, isFileAvilable);
 
 			helper.setTo(to);
 			if(cc!=null)

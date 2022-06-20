@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PasswordUtils {
 	
+	private PasswordUtils() {}
+	
 	// Method to generate a random alphanumeric password of a specific length
     public static String generateRandomPassword(int len)
     {

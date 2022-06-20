@@ -22,37 +22,36 @@ import com.karnan.service.UserMgmtServiceImpl;
 public class RegistrationRestController {
 
 	@Autowired
-	private UserMgmtServiceImpl UserMgmtServiceImpl;
+	private UserMgmtServiceImpl userMgmtServiceImpl;
 	
 	@PostMapping("signup")
 	public ResponseEntity<String> signUp(@RequestBody UserRegForm userRegForm) {
-		String status = UserMgmtServiceImpl.signUp(userRegForm);
-		return new ResponseEntity<String>(status,HttpStatus.CREATED);
+		String status = userMgmtServiceImpl.signUp(userRegForm);
+		return new ResponseEntity<>(status,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("email-available-check")
 	public ResponseEntity<String> emailAvailableCheck(@PathParam(value = "email") String email){
-		if(UserMgmtServiceImpl.isEmailExistsOrNot(email)) {
-			return new ResponseEntity<String>("Email is already available",HttpStatus.OK);
+		if(userMgmtServiceImpl.isEmailExistsOrNot(email)) {
+			return new ResponseEntity<>("Email is already available",HttpStatus.OK);
 		}else {
-			return new ResponseEntity<String>("Email is valid",HttpStatus.OK);
+			return new ResponseEntity<>("Email is valid",HttpStatus.OK);
 		}
 	}
 	
 	@GetMapping("countries")
 	public ResponseEntity<Map<Integer, String>> getAllContries(){
-		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllContries(),HttpStatus.OK);
+		return new ResponseEntity<>(userMgmtServiceImpl.getAllContries(),HttpStatus.OK);
 	}
 	
 	@GetMapping("state/{countryId}")
 	public ResponseEntity<Map<Integer, String>> getStatesByCountryId(@PathVariable(value = "countryId") int countryId){
-		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllStatesByCountryId(countryId) ,HttpStatus.OK);
+		return new ResponseEntity<>(userMgmtServiceImpl.getAllStatesByCountryId(countryId) ,HttpStatus.OK);
 	}
 	
 	@GetMapping("cities/{stateId}")
 	public ResponseEntity<Map<Integer, String>> getCityByStateId(@PathVariable(value = "stateId") int stateId){
-		System.out.println(stateId);
-		return new ResponseEntity<Map<Integer, String>>(UserMgmtServiceImpl.getAllCitiesByStateId(stateId) ,HttpStatus.OK);
+		return new ResponseEntity<>(userMgmtServiceImpl.getAllCitiesByStateId(stateId) ,HttpStatus.OK);
 	}
 	
 }

@@ -16,11 +16,11 @@ import com.karnan.service.UserMgmtServiceImpl;
 public class UnlockAccRestController {
 
 	@Autowired
-	private UserMgmtServiceImpl UserMgmtServiceImpl;
+	private UserMgmtServiceImpl userMgmtServiceImpl;
 	
 	@PostMapping("account-reset")
 	public ResponseEntity<String> accUlock(@RequestBody UnlockAccForm unlockAccForm){
-		String status = UserMgmtServiceImpl.accUlock(unlockAccForm);
-		return new ResponseEntity<String>(status,HttpStatus.OK);
+		String status = userMgmtServiceImpl.accUlock(unlockAccForm);
+		return new ResponseEntity<>(status,HttpStatus.OK);
 	}
 }

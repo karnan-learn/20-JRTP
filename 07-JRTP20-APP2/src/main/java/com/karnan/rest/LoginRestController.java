@@ -16,12 +16,11 @@ import com.karnan.service.UserMgmtServiceImpl;
 public class LoginRestController {
 	
 	@Autowired
-	private UserMgmtServiceImpl UserMgmtServiceImpl;
+	private UserMgmtServiceImpl userMgmtServiceImpl;
 	
 	@PostMapping("signin")
 	public ResponseEntity<String> signin(@RequestBody LoginForm loginForm){
-		String status = UserMgmtServiceImpl.signIn(loginForm);
-		System.out.println(status);
-		return new ResponseEntity<String>(status,HttpStatus.OK);
+		String status = userMgmtServiceImpl.signIn(loginForm);
+		return new ResponseEntity<>(status,HttpStatus.OK);
 	}
 }

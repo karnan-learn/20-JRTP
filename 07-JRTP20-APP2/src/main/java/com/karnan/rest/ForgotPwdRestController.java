@@ -16,11 +16,11 @@ import com.karnan.service.UserMgmtServiceImpl;
 public class ForgotPwdRestController {
 
 	@Autowired
-	private UserMgmtServiceImpl UserMgmtServiceImpl;
+	private UserMgmtServiceImpl userMgmtServiceImpl;
 	
 	@GetMapping("forget-password")
 	public ResponseEntity<String> forgetPassword(@PathParam(value = "email") String email){
-		String status = UserMgmtServiceImpl.forgetPassword(email);
-		return new ResponseEntity<String>(status,HttpStatus.OK);
+		String status = userMgmtServiceImpl.forgetPassword(email);
+		return new ResponseEntity<>(status,HttpStatus.OK);
 	}
 }

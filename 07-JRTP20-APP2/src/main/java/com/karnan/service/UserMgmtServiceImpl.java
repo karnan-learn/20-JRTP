@@ -50,43 +50,32 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 	String recoveryPasswordEmailTemplate;
 	@Override
 	public String signUp(UserRegForm user) throws IllegalArgumentException{
-		System.out.println(unlockAccountEmailTemplate+" "+recoveryPasswordEmailTemplate);
 		BeanUtils.copyProperties(user, userDtl);
 		userDtl.setUserPwd(PasswordUtils.generateRandomPassword(12));
 		userDtl.setAccStatus(false);
 		UserDtlsEntity savedUser = userDtlsRepo.save(userDtl); 
-		if(savedUser!=null) {
-			boolean sent = util.send(userDtl.getUserEmail(),
-					new String[] {},
-					new String[] {}, 
-					"Unlock IES Account", 
-					readMailBody.readMailBodyContent(unlockAccountEmailTemplate, savedUser), 
-					new Resource[] {});
-			System.out.println(sent);
-			if(sent) {
-				return "User Registration Successfull && Check Your Email for Temporary Password";
-			}else {
-				userDtlsRepo.deleteById(savedUser.getUserId());
-				return "Sending Email Failed && again SignUp";
-			}
+		boolean sent = util.send(userDtl.getUserEmail(),
+				new String[] {},
+				new String[] {}, 
+				"Unlock IES Account", 
+				readMailBody.readMailBodyContent(unlockAccountEmailTemplate, savedUser), 
+				new Resource[] {});
+		if(sent) {
+			return "User Registration Successfull && Check Your Email for Temporary Password";
 		}else {
-			return "User Registration Failed && Try again";
+			userDtlsRepo.deleteById(savedUser.getUserId());
+			return "Sending Email Failed && again SignUp";
 		}
 	}
 
 	@Override
 	public boolean isEmailExistsOrNot(String email) {
+		boolean isEmailExistsOrNot = true;
 		UserDtlsEntity userDtlsEntity = userDtlsRepo.findByUserEmail(email);
-		System.out.println(userDtlsEntity);
-		if(userDtlsEntity!=null) {
-			if(userDtlsEntity.getUserEmail().equals(email)) {
-				return true;
-			}else {
-				return false;
-			}
-		}else {
-			return false;
+		if(userDtlsEntity==null) {
+			isEmailExistsOrNot= false;
 		}
+		return isEmailExistsOrNot;
 	}
 
 	@Override
@@ -121,9 +110,9 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 	@Override
 	public String signIn(LoginForm loginForm) {
-		UserDtlsEntity userDtl = userDtlsRepo.findByUserEmail(loginForm.getEmail());
-		if(userDtl.getUserEmail().equals(loginForm.getEmail())){
-			if(userDtl.isAccStatus()) {
+		UserDtlsEntity userInfo = userDtlsRepo.findByUserEmail(loginForm.getEmail());
+		if(userInfo != null){
+			if(userInfo.isAccStatus()) {
 				return "Welcome to Ashok IT….";
 			}else {
 				return "Your Account Is Locked";
@@ -135,10 +124,8 @@ public class UserMgmtServiceImpl implements UserMgmtService {
 
 	@Override
 	public String forgetPassword(String email) {
-		System.out.println(email);
 		try {
 			UserDtlsEntity user = userDtlsRepo.findByUserEmail(email);
-			System.out.println(user);
 			if(user.isAccStatus()) {
 				if(isEmailExistsOrNot(email) && 
 						 util.send(user.getUserEmail(),
